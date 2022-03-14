@@ -57,7 +57,7 @@ class KucoinTrader:
         """
 
         if symbol == "all":
-                return self.client.get_accounts()
+            return self.client.get_accounts()
 
         if symbol:
             s = symbol
@@ -73,7 +73,7 @@ class KucoinTrader:
         self.client.create_inner_transfer(s, _from, _to, amount)
         print("transfer done")
 
-    def market_order(self, amount = None):
+    def market_order(self, amount=None):
 
         """
             https://docs.kucoin.com/#place-a-new-order
@@ -84,7 +84,6 @@ class KucoinTrader:
             raise Exception("symbol is invalid or is null")
 
         if amount is None:
-            print('working')
             # trade on whole asset of trade
             if self.side == "buy":
                 symbol = self.symbol.split("-")[1]
@@ -95,68 +94,38 @@ class KucoinTrader:
 
             amount = float(self.account_info(symbol)[0]["available"])
 
-        try:
-            if self.side == "buy":
+        if self.side == "buy":
+            try:
                 res = self.client.create_market_order(symbol=self.symbol, side=self.side, funds=amount)
                 return res
+            except KucoinAPIException as error:
+                if error.code == "200004":
+                    raise Exception("no enough asset in account for buying %s" % self.symbol)
+                elif error.code == "400100":
+                    raise Exception("parameter error")
 
-            elif self.side == "sell":
-                int_amount = int(amount)
-                str_a = str(amount).split(".")
-                
-                if len(str_a) == 1:
-                    amount = int_amount
-                else:
-                    str_a = str_a[1]
-                    print("str_a: ", str_a)
-                    if len(str_a) > 4:
-                        str_a = str_a[:5]
+        elif self.side == "sell":
+            count = 1
+            while True:
+                try:
+                    int_amount = int(amount)
+                    decimal = str(amount).split(".")
+
+                    if len(decimal) == 1:
+                        amount = int_amount
                     else:
-                        str_a = str_a[:len(str_a)-1]
-                    print("str_a2: ", str_a)
-                    amount = float("%s.%s" % (int_amount, str_a))
+                        str_decimal = decimal[1][:-count]
+                        amount = float("%s.%s" % (int_amount, str_decimal))
 
-                print("amount: ", amount)
-                res = self.client.create_market_order(symbol=self.symbol, side=self.side, size=str(amount))
-                return res
-            else:
-                raise Exception("invalid side")
-        except KucoinAPIException as error:
-            print("error: ", error)
-            if error.code == "200004":
-                self.inner_transfer("main", "trade")
-                int_amount = int(amount)
-                str_a = str(amount).split(".")
-                
-                if len(str_a) == 1:
-                    amount = int_amount
-                else:
-                    str_a = str_a[1]
-                    if len(str_a) > 4:
-                        str_a = str_a[:3]
-                    else:
-                        str_a = str_a[:len(str_a)-1]
-
-                    amount = float("%s.%s" % (int_amount, str_a))
-                return self.market_order(amount)
-            elif error.code == "400100":
-                int_amount = int(amount)
-                str_a = str(amount).split(".")
-                
-                if len(str_a) == 1:
-                    amount = int_amount
-                else:
-                
-                    str_a = str_a[1]
-                    if len(str_a) > 4:
-                        str_a = str_a[:3]
-                    else:
-                        str_a = str_a[:len(str_a)-1]
-
-                    amount = float("%s.%s" % (int_amount, str_a))
-                return self.market_order(amount)
-        except Exception as error:
-            print("error: ", error)
+                    res = self.client.create_market_order(symbol=self.symbol, side=self.side, size=str(amount))
+                    break
+                except KucoinAPIException as error:
+                    if error.code == "200004":
+                        continue
+                        # raise Exception("cannot trade with size %s for %s" % (amount, self.symbol))
+                    elif error.code == "400100":
+                        raise Exception("parameter error")
+            return res
 
     def limit_order(self, amount, price):
         if not self.symbol:
@@ -237,7 +206,7 @@ class KucoinTrader:
             if not [i for i in account_info if i["currency"] == symbol]:
                 print("symbol not found in account .. waiting for buy")
                 return
-            
+
             if self.side == "sell":
                 return
 
@@ -300,13 +269,11 @@ class CoinexTrader:
         self.side = side
 
 
-
 # app = KucoinTrader("MATIC-USDT", "sell")
 # print(app.market_order())
 
 app = KucoinTrader()
 print(app.account_info(symbol="all"))
-
 
 # app.inner_transfer("trade", "main")
 # print(app.last_trade_price()["price"])

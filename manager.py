@@ -47,7 +47,7 @@ class Manager:
         
         try:
             data["password"] = self.make_hash(data["password"])
-        except:
+        except KeyError:
             raise Exception("no password in data")
 
         self.database.write_user(data)
