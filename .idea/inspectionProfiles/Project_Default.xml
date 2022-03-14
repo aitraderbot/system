@@ -1,0 +1,39 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="N802" />
+          <option value="N806" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyShadowingBuiltinsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredNames">
+        <list>
+          <option value="id" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="django.db.models.fields.related.ManyToManyField.all" />
+          <option value="PodcastBlog.podcast.models.account" />
+          <option value="object.dispatch" />
+          <option value="django.db.models.fields.related.ManyToManyField.add" />
+          <option value="django.db.models.fields.related.ManyToManyField.remove" />
+          <option value="book.models.Author.objects" />
+          <option value="book.models.Category.objects" />
+          <option value="book.models.Book.objects" />
+          <option value="list.decode" />
+          <option value="api.models.Category.objects" />
+          <option value="api.models.Teacher.objects" />
+          <option value="api.models.WebSite.objects" />
+          <option value="api.models.Course.objects" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

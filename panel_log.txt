@@ -1,0 +1,10 @@
+ * Serving Flask app 'panel' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://185.202.113.178:4000/ (Press CTRL+C to quit)
+2.180.22.46 - - [10/Mar/2022 13:13:05] "POST /add_strategy HTTP/1.1" 200 -
+2.180.22.46 - - [10/Mar/2022 13:13:12] "POST /add_strategy HTTP/1.1" 200 -

@@ -1,0 +1,68 @@
+checking signal for  opal
+sell signal
+sleeping ....
+checking signal for  opal
+sell signal
+sleeping ....
+checking signal for  opal
+sell signal
+sleeping ....
+checking signal for  opal
+sell signal
+sleeping ....
+checking signal for  opal
+sell signal
+sleeping ....
+checking signal for  opal
+sell signal
+sleeping ....
+checking signal for  opal
+sell signal
+sleeping ....
+checking signal for  opal
+buy signal
+market order sent
+Done
+sleeping ....
+checking signal for  opal
+buy signal
+sleeping ....
+checking signal for  opal
+buy signal
+sleeping ....
+checking signal for  opal
+buy signal
+sleeping ....
+checking signal for  opal
+buy signal
+sleeping ....
+checking signal for  opal
+buy signal
+sleeping ....
+checking signal for  opal
+buy signal
+sleeping ....
+checking signal for  opal
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/dist-packages/pandas/core/indexes/base.py", line 2898, in get_loc
+    return self._engine.get_loc(casted_key)
+  File "pandas/_libs/index.pyx", line 70, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 101, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 1675, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 1683, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'open'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "manager.py", line 139, in <module>
+    manager.run_strategy(stra_name, symbol, time_frame, broker)
+  File "manager.py", line 108, in run_strategy
+    result_opal = self.check_condition(data, strategy_sell["candle_count"])
+  File "manager.py", line 58, in check_condition
+    df["open"] = df["open"].astype(float)
+  File "/usr/local/lib/python3.8/dist-packages/pandas/core/frame.py", line 2906, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/usr/local/lib/python3.8/dist-packages/pandas/core/indexes/base.py", line 2900, in get_loc
+    raise KeyError(key) from err
+KeyError: 'open'
