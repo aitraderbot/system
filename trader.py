@@ -124,7 +124,7 @@ class KucoinTrader:
                         continue
                         # raise Exception("cannot trade with size %s for %s" % (amount, self.symbol))
                     elif error.code == "400100":
-                        raise Exception("parameter error")
+                        continue
             return res
 
     def limit_order(self, amount, price):
@@ -153,6 +153,7 @@ class KucoinTrader:
             if error.code == "200004":
                 self.inner_transfer("main", "trade")
                 return self.limit_order(amount, price)
+                
         except Exception as error:
             print("error: ", error)
 
