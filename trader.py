@@ -188,8 +188,14 @@ class KucoinTrader:
         except:
             raise Exception("no settings are set for %s on %s" % (email, strategy_name))
 
+        print("----------- setting ----------")
+        print(setting)
+
         # read all transactions for strategy_name
         last_trx = self.read_trx(strategy_name)
+        print("------------ last trx ----------------")
+        print(last_trx)
+
         # get all coin and pair available
         account_info = self.account_info("all")
         size = None
@@ -216,12 +222,17 @@ class KucoinTrader:
                 size = setting["amount"]
         else:
             last_trx = last_trx[-1]
+            print("---------- last trx 2 --------------")
+            print(last_trx)
             if self.side == "buy" and last_trx["side"] == "sell":
                 size = setting["amount"]
             elif self.side == "sell" and last_trx["side"] == "buy":
                 size = last_trx["trade_%s" % coin]
             else:
                 return
+
+        print("--------- size ----------")
+        print(size)
 
         # just market order for now
         order_id = self.market_order(amount=size)["orderId"]
@@ -273,8 +284,8 @@ class CoinexTrader:
 # app = KucoinTrader("MATIC-USDT", "sell")
 # print(app.market_order())
 
-app = KucoinTrader()
-print(app.account_info(symbol="all"))
+# app = KucoinTrader()
+# print(app.account_info(symbol="all"))
 
 # app.inner_transfer("trade", "main")
 # print(app.last_trade_price()["price"])

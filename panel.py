@@ -18,7 +18,7 @@ def login_required(func):
     return wrapper
 
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 @login_required
 def home():
     return render_template("panel.html")

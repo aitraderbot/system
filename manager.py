@@ -57,16 +57,53 @@ class Manager:
         if transactions:
             return transactions
 
-    def report_file(self, data: dict):
-        d = self.report(data)
+    def report_file(self, _data: dict):
+        d = self.report(_data)
         d = [i for i in d.values()][0]
         df = pd.DataFrame(d)
-        print(df.columns)
         df["time"] = pd.to_datetime(df["timestamp"], unit="s")
-        print(df)
+        last_row = df.tail(1)
+        if last_row["side"].values[0] == "buy":
+            df.drop(index=last_row.index, inplace=True)
+        
+        data_list = list()
+        buy_sides = df[(df["side"] == "buy")]
+        for index, value in buy_sides.iterrows():
+            next_sell = df.iloc[index+1]
+            data_list.append((value.to_dict(), next_sell.to_dict()))
+        
+        new_data_list = list()
+        for data in data_list:
+            buy = data[0]
+            sell = data[1]
+            profit_last_price = (float(sell["last_price"]) - float(buy["last_price"])) / float(buy["last_price"])
+            new_data = {
+                "last_price_buy": buy["last_price"],
+                "last_price_sell": sell["last_price"],
+                "side": "%s-%s" % (buy["side"], sell["side"]),
+                "profit_last_price": profit_last_price,
+                "procfit_last_price_percent": profit_last_price * 100,
+                "time": "%s----%s" % (buy["time"], sell["time"])
+            }
+            new_data_list.append(new_data)
+
+        if last_row["side"].values[0] == "buy":
+            new_data = {
+                "last_price_buy": buy["last_price"],
+                "last_price_sell": "-",
+                "side": "%s" % (last_row["side"].values[0]),
+                "profit_last_price": "-",
+                "procfit_last_price_percent": "-",
+                "time": "%s" % last_row["time"].values[0]
+            }
+            new_data_list.append(new_data)
+
         # ./transaction_broker_strategy-name.csv
-        filename = "./transaction_%s_%s.csv" % (data["broker"], data["strategy_name"])
-        df.to_csv(filename)
+        filename = "./transaction_%s_%s.csv" % (_data["broker"], _data["strategy_name"])
+
+        new_df = pd.DataFrame(new_data_list)
+        new_df.to_csv(filename)
+
         return os.path.abspath(filename)
 
     def strategy_to_user(self, data: dict):
@@ -208,6 +245,8 @@ class Manager:
                 else:
                     print("no buy no sell")
                     continue
+
+                strategy["type"] = "buy"
 
                 self.send_signal(strategy["user_list"], strategy)
                 print("sleeping ....")

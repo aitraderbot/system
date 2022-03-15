@@ -11,3 +11,12 @@ from database import DatabaseRouter
 class BinanceTrader:
 
     def account_info():
+        pass 
+
+    def market_order(self):
+        pass
+
+    def limit_order(self):
+        pass
+
+    
